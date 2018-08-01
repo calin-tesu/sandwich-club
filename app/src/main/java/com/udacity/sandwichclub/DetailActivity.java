@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -15,12 +16,20 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
+    Sandwich sandwich = new Sandwich();
+
+    //    private ImageView mSandwichPicture;
+    private TextView mSandwichOrigin;
+    private TextView mSandwichDescription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
+        mSandwichOrigin = findViewById(R.id.origin_tv);
+        mSandwichDescription = findViewById(R.id.description_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -36,7 +45,7 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = JsonUtils.parseSandwichJson(json);
+        sandwich = JsonUtils.parseSandwichJson(json);
         if (sandwich == null) {
             // Sandwich data unavailable
             closeOnError();
@@ -57,6 +66,8 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
+        mSandwichOrigin.setText(sandwich.getPlaceOfOrigin());
+        mSandwichDescription.setText(sandwich.getDescription());
 
     }
 }
