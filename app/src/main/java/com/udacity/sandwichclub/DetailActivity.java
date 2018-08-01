@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
@@ -18,9 +20,11 @@ public class DetailActivity extends AppCompatActivity {
 
     Sandwich sandwich = new Sandwich();
 
-    //    private ImageView mSandwichPicture;
-    private TextView mSandwichOrigin;
-    private TextView mSandwichDescription;
+    private TextView mOriginalNameTextView;
+    private TextView mAlternativeNamesTextView;
+    private TextView mIngredientsTextView;
+    private TextView mPlaceOfOriginTextView;
+    private TextView mSandwichDescriptionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +32,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
-        mSandwichOrigin = findViewById(R.id.origin_tv);
-        mSandwichDescription = findViewById(R.id.description_tv);
+        mOriginalNameTextView = findViewById(R.id.origin_tv);
+        mAlternativeNamesTextView = findViewById(R.id.also_known_tv);
+        mIngredientsTextView = findViewById(R.id.ingredients_tv);
+        mPlaceOfOriginTextView = findViewById(R.id.place_of_origin_tv);
+        mSandwichDescriptionTextView = findViewById(R.id.description_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -66,8 +73,30 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        mSandwichOrigin.setText(sandwich.getPlaceOfOrigin());
-        mSandwichDescription.setText(sandwich.getDescription());
+        mOriginalNameTextView.setText(sandwich.getMainName());
+        mSandwichDescriptionTextView.setText(sandwich.getDescription());
 
+        if (sandwich.getPlaceOfOrigin().isEmpty()) {
+            mPlaceOfOriginTextView.setText(R.string.unknown_origin);
+        } else {
+            mPlaceOfOriginTextView.setText(sandwich.getPlaceOfOrigin());
+        }
+
+        List alternativeNames = sandwich.getAlsoKnownAs();
+        if (alternativeNames.isEmpty()) {
+            mAlternativeNamesTextView.setText(R.string.no_other_names);
+        } else {
+            for (int i = 0; i < alternativeNames.size(); i++) {
+                String currentName = String.valueOf(alternativeNames.get(i));
+                mAlternativeNamesTextView.append(" \"" + currentName + "\" ");
+            }
+        }
+
+        List ingredients = sandwich.getIngredients();
+        for (int i = 0; i < ingredients.size(); i++) {
+            String currentIngredient = String.valueOf(ingredients.get(i));
+            mIngredientsTextView.append(" \"" + currentIngredient + "\" ");
+        }
     }
 }
+
